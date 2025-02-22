@@ -2,10 +2,15 @@ from flask import Flask, render_template, request, jsonify
 from bs4 import BeautifulSoup
 import requests
 import src.easy_db as db
+import src.sqllite_db as sdb
 import os
 
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 app = Flask(__name__)
-sites_db = db.DataBase("../../assets/databases/ip_addrs.json")
+# sites_db = db.DataBase("../../assets/databases/ip_addrs.json")
+sites_db = sdb.DataBase("../../assets/databases/ip_addrs")
 
 def is_ip(string: str):
     dot_count = string.count(".")
@@ -22,15 +27,11 @@ def is_online(ip):
 
 def get_site_text(html_content):
     soup = BeautifulSoup(html_content, "html.parser")
-                
-    # Удаляем все скрипты и стили
-    for script in soup(["script", "style"]):
-        script.decompose()
-        
-    # Получаем текст и очищаем его
-    text = soup.get_text()
-    lines = (line.strip() for line in text.splitlines())
-    text = ' '.join(chunk for chunk in lines if chunk)
+    
+    # Извлекаем текст только из нужных тегов
+    paragraphs = soup.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a'])
+    text = ' '.join([tag.get_text(strip=True) for tag in paragraphs])
+    
     return text
 
 def search_database(
@@ -53,10 +54,10 @@ def search_database(
     all_ips = set()
 
     for ip, data in big_data.items():
+        print(ip, ip_search)
         content = data["content"]
         domain = data["domain"]
         title = data["title"]
-        # status_code = data["status_code"]
 
         if title_search and (title_search in title):
             title_results.add(ip)
@@ -142,14 +143,16 @@ def new_ip_addr(
                 content.find("</title>")
             ]
 
-    sites_db.set(
-        ip_addr, {
-            "content": content,
-            "title": title,
-            "domain": domain,
-            "has-https": has_https
-        }
-    )
+    print("new ip!")
+    if is_ip(ip_addr):
+        sites_db.set(
+            ip_addr, {
+                "content": content,
+                "title": title,
+                "domain": domain,
+                "has-https": has_https
+            }
+        )
 
 @app.route('/')
 def index():
@@ -193,6 +196,7 @@ def registrate_new_ip():
             print(f"From {request.remote_addr} ->\n{'-'*10}\n{data["ip"]}\n{'-'*10}\n\n is not IP")
             return "fail"
 
+        print("new ip")
         new_ip_addr(
             data["ip"],
             data["domain"] if data["domain"] != "__empty" else "",
@@ -202,8 +206,10 @@ def registrate_new_ip():
     return "ok"
 
 if __name__ == '__main__':
+    # print(get_site_text(requests.get("https://google.com").text))
     app.run(
         host="192.168.31.100",
         port=8080,
         # debug=True
     )
+    sites_db.close()

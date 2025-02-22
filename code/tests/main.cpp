@@ -89,24 +89,26 @@ int main(){
                 break;
             }
         }
-        std::cout << "\n[LOG] Parsed all";
+
+        std::cout << std::endl << "\n[LOG] Parsed all";
+        // char p;std::cin >> p;
 
         std::string ans = "";
         for (auto &payl: payload){
             ans += payl;
             ans += '\n';
-            std::cout << payl << std::endl << std::endl;
+            // std::cout << payl << std::endl << std::endl;
         }
 
         // req.payload = payload.dump();
         req.payload = ans;
         auto answer = req.response().data;
 
-        // if (answer != "ok"){
-        //     std::cout << "Returned " << answer << std::endl << std::endl;
-        // } else {
-        //     std::cout << "\n[LOG] Server accepted!";
-        // }
+        if (answer != "ok"){
+            std::cout << "Returned " << answer << std::endl << std::endl;
+        } else {
+            std::cout << "\n[LOG] Server accepted!";
+        }
     }
 
 }
