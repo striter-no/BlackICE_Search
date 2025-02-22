@@ -45,8 +45,9 @@ def search_database(
     print(big_data)
     all_ips = set()
 
-    for ip, data in big_data.items():
+    for ip in big_data:
         print(ip, ip_search)
+        data = sites_db.get(ip)
         content = data["content"]
         domain = data["domain"]
         title = data["title"]
