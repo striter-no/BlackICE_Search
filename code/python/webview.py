@@ -10,7 +10,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
 # sites_db = db.DataBase("../../assets/databases/ip_addrs.json")
-sites_db = sdb.DataBase("../../assets/databases/ip_addrs")
+sites_db = sdb.DataBase("../../assets/databases/ip_addrs.sql")
 
 def is_ip(string: str):
     dot_count = string.count(".")
@@ -54,7 +54,6 @@ def search_database(
     all_ips = set()
 
     for ip, data in big_data.items():
-        print(ip, ip_search)
         content = data["content"]
         domain = data["domain"]
         title = data["title"]
@@ -143,7 +142,6 @@ def new_ip_addr(
                 content.find("</title>")
             ]
 
-    print("new ip!")
     if is_ip(ip_addr):
         sites_db.set(
             ip_addr, {
@@ -169,7 +167,7 @@ def submit():
         content_search=input_value,
         ip_search=input_value
     )
-    print(f"Search result: {all_ips}")
+    print(f"Search result ({input_value}): {all_ips}")
 
     return jsonify({
         "results": [{
@@ -196,7 +194,6 @@ def registrate_new_ip():
             print(f"From {request.remote_addr} ->\n{'-'*10}\n{data["ip"]}\n{'-'*10}\n\n is not IP")
             return "fail"
 
-        print("new ip")
         new_ip_addr(
             data["ip"],
             data["domain"] if data["domain"] != "__empty" else "",
@@ -212,4 +209,4 @@ if __name__ == '__main__':
         port=8080,
         # debug=True
     )
-    sites_db.close()
+    # sites_db.close()

@@ -10,16 +10,12 @@
 using namespace nlohmann;
 
 std::string getDomain(std::string ip){
-    std::cout << "{ getting domain for " << ip << "}\n";
     auto host = sys::execute("host " + ip);
-    std::cout << "Host command output: " << host << "\n"; // Отладочное сообщение
     if (host.find("not found") == std::string::npos){
         auto domain = utils::str::strip(utils::vec::stripsplit(host).back(), '\n');
         domain.pop_back();
-        std::cout << " [OK "<<domain<<"]\n";
         return domain;
     }
-    std::cout << " [OK (empty)]\n"; 
     return "__empty";
 }
 
@@ -50,7 +46,7 @@ int main(){
         
         std::string out = scaner.scan(
             "", "",
-            2000,
+            10000,
             {80, 443},
             "15s"
         );
@@ -65,19 +61,17 @@ int main(){
         std::vector<std::string> payload;
 
         for (int i = 0; i < scans.size(); i++){ auto &scan = scans[i]; 
-            std::cout << "[NEW_SCAN " << i << '/' << scans.size() << "][PIPE] New scan... \n";
+            std::cout << "[NEW_SCAN " << i << '/' << scans.size() << "][PIPE] New scan... ";
             
             auto host = parser.parse(scan);
-            std::cout << "Parsed...\n";
+            std::cout << "Parsed... ";
             if (!host.online){
-                std::cout << "Host not online\n";
+                std::cout << "Host not online ";
             }
+            std::cout<<"\r";
 
-            std::cout << "domain...\n";
             auto domain = getDomain(host.ip);
-            std::cout << "https...\n";
             auto has_https = hasHTTPs(host.ports);
-            std::cout << "json...\n";
             
             payload.push_back(
                 host.ip + ' ' + domain + ' ' + (has_https ? "true" : "false")
@@ -90,7 +84,7 @@ int main(){
             }
         }
 
-        std::cout << std::endl << "\n[LOG] Parsed all";
+        std::cout << std::endl << "\n[LOG] Parsed all" << std::endl;
         // char p;std::cin >> p;
 
         std::string ans = "";
