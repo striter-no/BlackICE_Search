@@ -22,9 +22,6 @@ def is_ip(string: str):
     
     return True
 
-def is_online(ip):
-    return os.system("fping -c1 -t500 " + ip)
-
 def get_site_text(html_content):
     soup = BeautifulSoup(html_content, "html.parser")
     
@@ -192,7 +189,8 @@ def registrate_new_ip():
         print(data)
         if not is_ip(data["ip"]):
             print(f"From {request.remote_addr} ->\n{'-'*10}\n{data["ip"]}\n{'-'*10}\n\n is not IP")
-            return "fail"
+            continue
+            # return "fail"
         res = new_ip_addr(
             data["ip"],
             data["domain"] if data["domain"] != "__empty" else "",

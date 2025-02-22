@@ -11,6 +11,9 @@ using namespace nlohmann;
 
 std::string getDomain(std::string ip){
     auto host = sys::execute("host " + ip);
+    if (host.find("Usage") != std::string::npos){
+        return "__empty";
+    }
     if (host.find("not found") == std::string::npos){
         auto domain = utils::str::strip(utils::vec::stripsplit(host).back(), '\n');
         domain.pop_back();
@@ -46,7 +49,7 @@ int main(){
         
         std::string out = scaner.scan(
             "", "",
-            1000,
+            5000,
             {80, 443},
             "15s"
         );
