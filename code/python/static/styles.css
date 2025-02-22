@@ -1,0 +1,38 @@
+body {
+    display: flex;
+    flex-direction: column; /* Изменено на column для вертикального расположения */
+    align-items: flex-start; /* Выравнивание по левому краю */
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    text-align: left; /* Выравнивание текста влево */
+    width: 90%; /* Установлено для ограничения ширины контейнера */
+    margin-top: 20px; /* Отступ сверху */
+    margin-left: 20px;
+}
+
+#inputField {
+    padding: 10px;
+    font-size: 16px;
+    width: 70%; /* Установлено для длинного поля ввода */
+    border-radius: 5px; /* Менее заметные края */
+    border: 1px solid #ccc; /* Лёгкая граница */
+    transition: border-color 0.3s; /* Плавный переход цвета границы */
+}
+
+#inputField:focus {
+    border-color: blue; /* Изменение цвета границы на синий при фокусе */
+    outline: none; /* Убираем стандартный контур */
+}
+
+#resultsContainer {
+    margin-top: 20px; /* Отступ сверху для контейнера результатов */
+    width: 100%; /* Ширина контейнера результатов */
+}
+
+.result-item {
+    margin-bottom: 10px; /* Отступ между элементами результатов */
+}

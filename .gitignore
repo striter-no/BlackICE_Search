@@ -1,0 +1,9 @@
+assets/databases/*
+assets/*
+__pycache__
+.vscode
+*.o
+out/*
+venv
+tmp
+release
