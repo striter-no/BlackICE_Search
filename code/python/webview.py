@@ -45,58 +45,54 @@ def search_database(
         return []
 
     big_data = sites_db.all()
-    
-    title_results = set()
-    content_results = set()
-    domain_results = set()
-    ip_results = set()
-
+    print(big_data)
     all_ips = set()
 
     for ip, data in big_data.items():
+        print(ip, ip_search)
         content = data["content"]
         domain = data["domain"]
         title = data["title"]
 
         if title_search and (title_search in title):
-            title_results.add(ip)
+            # title_results.add(ip)
             all_ips.add(ip)
         
         if content_search and (content_search in content):
-            content_results.add(ip)
+            # content_results.add(ip)
             all_ips.add(ip)
 
         if domain_search and (domain_search in domain):
-            domain_results.add(ip)
+            # domain_results.add(ip)
             all_ips.add(ip)
         
         if ip_search and (ip_search in ip):
-            ip_results.add(ip)
+            # ip_results.add(ip)
             all_ips.add(ip)
     
-    to_intersect: list[set] = []
-    if not (title_search is None):   to_intersect.append(title_results)
-    if not (content_search is None): to_intersect.append(content_results)
-    if not (domain_search is None):   to_intersect.append(domain_results)
-    if not (ip_search is None):      to_intersect.append(ip_results)
+    # to_intersect: list[set] = []
+    # if not (title_search is None):   to_intersect.append(title_results)
+    # if not (content_search is None): to_intersect.append(content_results)
+    # if not (domain_search is None):   to_intersect.append(domain_results)
+    # if not (ip_search is None):      to_intersect.append(ip_results)
 
-    answer = set()
-    curr_set = to_intersect[0]
+    # answer = set()
+    # curr_set = to_intersect[0]
 
-    if len(to_intersect) == 1:
-        answer.union(curr_set)
+    # if len(to_intersect) == 1:
+    #     answer.union(curr_set)
 
-    if len(to_intersect) == 2:
-        answer = curr_set.intersection(
-            to_intersect[i+1]
-        )
+    # if len(to_intersect) == 2:
+    #     answer = curr_set.intersection(
+    #         to_intersect[i+1]
+    #     )
 
-    for i in range(max(0, len(to_intersect) - 2)):
-        answer = answer.intersection(
-            to_intersect[i+1]
-        )
+    # for i in range(max(0, len(to_intersect) - 2)):
+    #     answer = answer.intersection(
+    #         to_intersect[i+1]
+        # )
     
-    return list(answer), list(all_ips)
+    return list(), list(all_ips)
 
 def get_link(
     ip_addr: str,
@@ -116,7 +112,7 @@ def get_content(
     ip_addr = get_link(ip_addr, has_https)
 
     try:
-        req = requests.get(ip_addr, verify=False)
+        req = requests.get(ip_addr, verify=False, timeout=5)
         content = ""
         if req.status_code == 200:
             content = req.text
@@ -143,7 +139,7 @@ def new_ip_addr(
             ]
 
     if is_ip(ip_addr):
-        sites_db.set(
+        return (
             ip_addr, {
                 "content": content,
                 "title": title,
@@ -151,6 +147,9 @@ def new_ip_addr(
                 "has-https": has_https
             }
         )
+    else:
+        print(f"not an IP {ip_addr}")
+        return None
 
 @app.route('/')
 def index():
@@ -160,12 +159,13 @@ def index():
 def submit():
     data = request.get_json()
     input_value = data.get('input')
-
+    searches = data.get("searches")
+    print(searches)
     results, all_ips = search_database(
-        title_search=input_value,
-        domain_search=input_value,
-        content_search=input_value,
-        ip_search=input_value
+        title_search=input_value if searches["title"] else None,
+        domain_search=input_value if searches["domain"] else None,
+        content_search=input_value if searches["content"] else None,
+        ip_search=input_value if searches["ip"] else None
     )
     print(f"Search result ({input_value}): {all_ips}")
 
@@ -181,7 +181,7 @@ def submit():
 def registrate_new_ip():
     big_data = request.get_data(as_text=True)
     print(big_data)
-
+    batch = []
     for raw_data in big_data.splitlines():
         raw_data = raw_data.split()
         data = {
@@ -189,17 +189,21 @@ def registrate_new_ip():
             "domain": raw_data[1],
             "has-https": raw_data[2] == 'true'
         }
-
+        print(data)
         if not is_ip(data["ip"]):
             print(f"From {request.remote_addr} ->\n{'-'*10}\n{data["ip"]}\n{'-'*10}\n\n is not IP")
             return "fail"
-
-        new_ip_addr(
+        res = new_ip_addr(
             data["ip"],
             data["domain"] if data["domain"] != "__empty" else "",
             data["has-https"]
         )
+        if res:
+            batch.append(res)
+    
+    sites_db.batch_set(batch)
 
+    print("Returning..")
     return "ok"
 
 if __name__ == '__main__':

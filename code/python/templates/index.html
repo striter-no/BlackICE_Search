@@ -9,6 +9,14 @@
 <body>
     <div class="container">
         <input type="text" id="inputField" placeholder="Введите запрос и нажмите Enter">
+        
+        <div>
+            <label><input type="checkbox" id="titleCheckbox" checked> Titles</label>
+            <label><input type="checkbox" id="domainCheckbox" checked> Domains</label>
+            <label><input type="checkbox" id="contentCheckbox" checked> Content</label>
+            <label><input type="checkbox" id="ipCheckbox" checked> IPs</label>
+        </div>
+        
         <div id="resultsContainer"></div> <!-- Добавлен контейнер для результатов -->
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

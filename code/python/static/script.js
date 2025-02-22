@@ -1,12 +1,21 @@
 document.getElementById('inputField').addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
         const inputValue = this.value;
+
+        // Собираем состояние чекбоксов
+        const searches = {
+            title: document.getElementById('titleCheckbox').checked,
+            domain: document.getElementById('domainCheckbox').checked,
+            content: document.getElementById('contentCheckbox').checked,
+            ip: document.getElementById('ipCheckbox').checked
+        };
+
         fetch('/submit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ input: inputValue }),
+            body: JSON.stringify({ input: inputValue, searches: searches }), // Передаем состояние чекбоксов
         })
         .then(response => response.json())
         .then(data => {

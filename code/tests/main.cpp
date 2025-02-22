@@ -42,21 +42,21 @@ int main(){
     req.method = requests::POST;
     while (true){
         
-        std::cout << "[LOG] New scan\n";
+        std::cout << "[LOG] New scan" << std::endl;
         
         std::string out = scaner.scan(
             "", "",
-            10000,
+            1000,
             {80, 443},
             "15s"
         );
         
-        std::cout << "[LOG] Scanned, parsing multiple results\n";
+        std::cout << "[LOG] Scanned, parsing multiple results"<< std::endl;
 
         
         auto scans = parser.split_mult_results(out);
         
-        std::cout << "[LOG] Parsed, found " + std::to_string(scans.size()) + " hosts\n";
+        std::cout << "[LOG] Parsed, found " + std::to_string(scans.size()) + " hosts"<< std::endl;
         
         std::vector<std::string> payload;
 
@@ -77,14 +77,12 @@ int main(){
                 host.ip + ' ' + domain + ' ' + (has_https ? "true" : "false")
             );
 
-            std::cout << "next...\n";
-
             if (i == scans.size() - 1){
                 break;
             }
         }
 
-        std::cout << std::endl << "\n[LOG] Parsed all" << std::endl;
+        std::cout << std::endl << "[LOG] Parsed all" << std::endl;
         // char p;std::cin >> p;
 
         std::string ans = "";
@@ -95,13 +93,14 @@ int main(){
         }
 
         // req.payload = payload.dump();
+        std::cout << "[LOG] Send it to server" << std::endl;
         req.payload = ans;
         auto answer = req.response().data;
 
         if (answer != "ok"){
-            std::cout << "Returned " << answer << std::endl << std::endl;
+            std::cout << "Returned \"" << answer << '"' << std::endl << std::endl;
         } else {
-            std::cout << "\n[LOG] Server accepted!";
+            std::cout << "[LOG] Server accepted!" << std::endl;
         }
     }
 

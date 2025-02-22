@@ -1,42 +1,71 @@
 import sqlite3
 import json
-from flask import g
 
 class DataBase:
-    def __init__(self, path: str) -> None:
-        self.path = path
+    def __init__(self, db_name='data.db'):
+        self.connection = sqlite3.connect(db_name, check_same_thread=False)
+        self.create_table()
 
-    def _get_connection(self):
-        if 'db_connection' not in g:
-            g.db_connection = sqlite3.connect(self.path, check_same_thread=False)  # Разрешаем использование в разных потоках
-        return g.db_connection
+    def create_table(self):
+        with self.connection:
+            self.connection.execute('''
+                CREATE TABLE IF NOT EXISTS data (
+                    key TEXT PRIMARY KEY,
+                    value TEXT
+                )
+            ''')
+
+    def all(self):
+        cursor = self.connection.cursor()
+        cursor.execute('SELECT key FROM data')
+        keys = [row[0] for row in cursor.fetchall()]
+        return keys
+
+    def set(self, key, value):
+        # Сериализуем значение в JSON
+        serialized_value = json.dumps(value)
+        
+        # Используем один запрос для вставки или обновления
+        with self.connection:
+            self.connection.execute('''
+                INSERT INTO data (key, value) VALUES (?, ?)
+                ON CONFLICT(key) DO UPDATE SET value=excluded.value
+            ''', (key, serialized_value))
+
+    def batch_set(self, items):
+        # Пакетная вставка для улучшения производительности
+        with self.connection:
+            self.connection.executemany('''
+                INSERT INTO data (key, value) VALUES (?, ?)
+                ON CONFLICT(key) DO UPDATE SET value=excluded.value
+            ''', [(key, json.dumps(value)) for key, value in items])
 
     def get(self, key):
-        connection = self._get_connection()
-        cursor = connection.cursor()
+        cursor = self.connection.cursor()
         cursor.execute('SELECT value FROM data WHERE key = ?', (key,))
         result = cursor.fetchone()
-        return json.loads(result[0]) if result else None  # Десериализация словаря
-    
-    def set(self, key, value) -> None:
-        connection = self._get_connection()
-        cursor = connection.cursor()
-        cursor.execute('REPLACE INTO data (key, value) VALUES (?, ?)', (key, json.dumps(value)))  # Сериализация словаря
-        connection.commit()
-    
-    def exists(self, key) -> bool:
-        connection = self._get_connection()
-        cursor = connection.cursor()
-        cursor.execute('SELECT 1 FROM data WHERE key = ?', (key,))
-        return cursor.fetchone() is not None
-    
-    def all(self) -> dict:
-        connection = self._get_connection()
-        cursor = connection.cursor()
-        cursor.execute('SELECT key, value FROM data')
-        return {key: json.loads(value) for key, value in cursor.fetchall()}  # Десериализация всех значений
+        return json.loads(result[0]) if result else None
 
     def close(self):
-        db_connection = g.pop('db_connection', None)
-        if db_connection is not None:
-            db_connection.close()
+        self.connection.close()
+
+# Пример использования
+if __name__ == "__main__":
+    store = DataBase()
+    
+    # Пример одиночной вставки
+    store.set('example_key', {'example': 'value'})
+
+    # Пример пакетной вставки
+    items_to_insert = [
+        ('key1', {'data': 'value1'}),
+        ('key2', {'data': 'value2'}),
+        ('key3', {'data': 'value3'}),
+    ]
+    store.batch_set(items_to_insert)
+
+    # Получение значения
+    print(store.get('example_key'))
+
+    # Закрытие соединения
+    store.close()
