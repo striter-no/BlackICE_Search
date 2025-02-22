@@ -6,7 +6,7 @@ headersDir = ./code/src/include
 
 [compiler]
 mode = g++
-standart = c++23
+standart = c++17
 warnings = false
 headersDir = variables.headersDir
 optimize = 3

@@ -178,18 +178,26 @@ def submit():
 
 @app.route('/new_ip', methods=['POST'])
 def registrate_new_ip():
-    data = request.json
-    print(data)
+    big_data = request.get_data(as_text=True)
+    print(big_data)
 
-    if not is_ip(data["ip"]):
-        print(f"From {request.remote_addr} ->\n{'-'*10}\n{data["ip"]}\n{'-'*10}\n\n is not IP")
-        return "fail"
+    for raw_data in big_data.splitlines():
+        raw_data = raw_data.split()
+        data = {
+            "ip": raw_data[0],
+            "domain": raw_data[1],
+            "has-https": raw_data[2] == 'true'
+        }
 
-    new_ip_addr(
-        data["ip"],
-        data["domain"],
-        data["has-https"]
-    )
+        if not is_ip(data["ip"]):
+            print(f"From {request.remote_addr} ->\n{'-'*10}\n{data["ip"]}\n{'-'*10}\n\n is not IP")
+            return "fail"
+
+        new_ip_addr(
+            data["ip"],
+            data["domain"] if data["domain"] != "__empty" else "",
+            data["has-https"]
+        )
 
     return "ok"
 

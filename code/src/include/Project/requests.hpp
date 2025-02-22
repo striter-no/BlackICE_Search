@@ -91,7 +91,7 @@ namespace requests {
             METHOD method;
             std::string payload;
         
-            Response response(){
+            Response response(std::string content_type = "text/plain"){
                 std::string responseString;
                 CURLcode httpStatus;
 
@@ -100,7 +100,7 @@ namespace requests {
                         
                         struct curl_slist *slist1;
                         slist1 = NULL;
-                        slist1 = curl_slist_append(slist1, "Content-Type: application/json");
+                        slist1 = curl_slist_append(slist1, ("Content-Type: " + content_type).c_str());
 
                         curl_mass_init(responseString);
                         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.c_str());
