@@ -8,17 +8,51 @@
 </head>
 <body>
     <div class="container">
-        <input type="text" id="inputField" placeholder="Введите запрос и нажмите Enter">
-        
-        <div>
-            <label><input type="checkbox" id="titleCheckbox" checked> Titles</label>
-            <label><input type="checkbox" id="domainCheckbox" checked> Domains</label>
-            <label><input type="checkbox" id="contentCheckbox" checked> Content</label>
-            <label><input type="checkbox" id="ipCheckbox" checked> IPs</label>
+        <div class="search-container">
+            <input type="text" id="inputField" placeholder="Введите запрос и нажмите Enter">
+            <div class="buttons">
+                <button class="round-button active" id="titleButton" onclick="toggleButton(this)">Titles</button>
+                <button class="round-button" id="domainButton" onclick="toggleButton(this)">Domains</button>
+                <button class="round-button active" id="contentButton" onclick="toggleButton(this)">Content</button>
+                <button class="round-button" id="ipButton" onclick="toggleButton(this)">IPs</button>
+                <button class="round-button" id="SSH_portButton" onclick="toggleButton(this)">SSH</button>
+                <button class="round-button" id="domain_portButton" onclick="toggleButton(this)">Domain</button>
+                <button class="round-button" id="mysql_portButton" onclick="toggleButton(this)">MySQL</button>
+            </div>
+            <div id="resultsContainer" class="results"></div>
         </div>
         
-        <div id="resultsContainer"></div>
+        <div id="siteInfoContainer" class="site-info">
+            <h2>Analysis for <span id="siteIp">123.123.123.123</span></h2>
+            <p>Domain name: ...</p>
+            <p>Site title: ...</p>
+            <p>Supports HTTPS: ...</p>
+            <p>Vulnerabilities:</p>
+            <ul>
+                <li>CVE-2020-1234 (exploit link)</li>
+                <li>CVE-2020-1235 (exploit link)</li>
+                <li>CVE-2020-1236 (exploit link)</li>
+            </ul>
+            <p>Other opened ports:</p>
+            <ul>
+                <li>20: SSH</li>
+                <li>8888: Telnet</li>
+            </ul>
+        </div>
     </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">Documentation</a>
+                <a href="#">API</a>
+                <a href="#">BlackIce Search LLC</a>
+                <a href="#">Contact us</a>
+                <a href="#">About this results</a>
+            </div>
+        </div>
+    </footer>
+    
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

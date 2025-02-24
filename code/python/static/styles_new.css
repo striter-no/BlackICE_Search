@@ -1,0 +1,114 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to left, #ff8080, #859dff);
+    overflow: auto; /* Позволяем прокрутку страницы */
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+    width: 100%;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    margin-left: 40px;
+    width: 100%;
+    position: relative; /* Изменено на relative для правильного позиционирования */
+}
+
+#inputField {
+    padding: 10px;
+    font-size: 16px;
+    width: 70%;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s;
+}
+
+#inputField:focus {
+    border-color: blue;
+    outline: none;
+}
+
+#resultsContainer {
+    margin-top: 20px;
+    width: 85%;
+}
+
+.result-item {
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.site-info {
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+
+    position: fixed;
+    right: 5pc;
+    top: 80px;
+    height: auto;
+    max-height: 50vh;
+    padding: 15px;
+
+    background: rgba(255, 255, 255, 0.8);    
+    overflow-y: auto;
+    width: 15%;
+    min-height: 30px;
+
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.round-button {
+    background-color: #ff8080; /* Цвет фона */
+    border: none; /* Убираем границу */
+    border-radius: 10px; /* Закругленные края */
+    color: white; /* Цвет текста */
+    padding: 10px 15px; /* Отступы */
+    font-size: 16px; /* Размер шрифта */
+    cursor: pointer; /* Указатель при наведении */
+    margin: 5px; /* Отступ между кнопками */
+    transition: background-color 0.3s; /* Плавный переход цвета */
+}
+
+.round-button:hover {
+    background-color: #ff4d4d; /* Цвет при наведении */
+}
+
+.round-button.active {
+    background-color: #859dff; /* Цвет для активной кнопки */
+}
+
+footer {
+    display: flex; /* Используем flex для центрирования */
+    background-color: white; /* Белый фон */
+    padding: 5px; /* Отступы по 5px */
+    border-radius: 10px; /* Закругленные края */
+    text-align: center; /* Центрируем текст */
+    margin-top: auto; /* Отступ сверху */
+    width: 100%; /* Занимает всю ширину */
+    position: relative; /* Позиционирование */
+    bottom: -10px; /* Внизу страницы */
+    align-items: center; /* Центрируем по Y */
+}
+
+.footer-links a {
+    margin: 0 10pc; /* Отступы между ссылками */
+    text-decoration: none; /* Убираем подчеркивание */
+    color: #000; /* Цвет текста */
+}

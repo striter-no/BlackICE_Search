@@ -1,6 +1,8 @@
 #pragma once
 
 #include <utils/string.hpp>
+#include <memory>
+#include <stdio.h>
 
 namespace sys{
     void execute(

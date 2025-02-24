@@ -205,7 +205,8 @@ namespace nmap {
                             
                             // std::cout << "!![]" << splitted[0] << ' ' << line << std::endl;
 
-                            port.port_number = std::stoi(splitted[0]);
+                            try {port.port_number = std::stoi(splitted[0]);}
+                            catch (const std::exception& e){continue;}
                             port.protocol = resolvePortProt(splitted[1]);
                         }
 
@@ -245,9 +246,11 @@ namespace nmap {
 
                     if (line.find("hops") != std::string::npos){
                         
+                        try{
                         host.network_distance = std::stoi(
                             utils::vec::split(line)[2]
                         );
+                        } catch(const std::exception& e){continue;}
                     }
 
                     if (line.find("Running") != std::string::npos){

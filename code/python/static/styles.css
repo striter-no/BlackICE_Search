@@ -1,38 +1,123 @@
+:link { color: #a1a6bd; }
+:visited { color: #8b1a40; }
+
 body {
     display: flex;
-    flex-direction: column; /* Изменено на column для вертикального расположения */
-    align-items: flex-start; /* Выравнивание по левому краю */
+    flex-direction: column;
+    align-items: flex-start;
     height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
+    background: radial-gradient(#4d4d4d, #131314);
+    overflow: auto; /* Позволяем прокрутку страницы */
 }
 
 .container {
-    text-align: left; /* Выравнивание текста влево */
-    width: 90%; /* Установлено для ограничения ширины контейнера */
-    margin-top: 20px; /* Отступ сверху */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+    width: 100%;
+    /* margin-top: 20px;  */
     margin-left: 20px;
+}
+
+.search-container {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+    margin-left: 100px;
+    width: 100%;
+    position: relative; /* Изменено на relative для правильного позиционирования */
 }
 
 #inputField {
     padding: 10px;
     font-size: 16px;
-    width: 70%; /* Установлено для длинного поля ввода */
-    border-radius: 5px; /* Менее заметные края */
-    border: 1px solid #ccc; /* Лёгкая граница */
-    transition: border-color 0.3s; /* Плавный переход цвета границы */
+    width: 70%;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    background-color: #131314;
+    color: #e7e7e7;
+    transition: border-color 0.3s;
 }
 
 #inputField:focus {
-    border-color: blue; /* Изменение цвета границы на синий при фокусе */
-    outline: none; /* Убираем стандартный контур */
+    border-color: rgb(175, 46, 89);
+    outline: none;
 }
 
 #resultsContainer {
-    margin-top: 20px; /* Отступ сверху для контейнера результатов */
-    width: 100%; /* Ширина контейнера результатов */
+    margin-top: 20px;
+    width: 65%;
 }
 
 .result-item {
-    margin-bottom: 10px; /* Отступ между элементами результатов */
+    margin-bottom: 10px;
+    background: rgba(53, 49, 49, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    color: #e7e7e7;
+}
+
+.site-info {
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+
+    position: fixed;
+    right: 5pc;
+    top: 80px;
+    height: auto;
+    max-height: 50vh;
+    padding: 15px;
+
+    background: rgba(255, 255, 255, 0.8);    
+    overflow-y: auto;
+    width: 15%;
+    min-height: 30px;
+
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.round-button {
+    background-color: #707c94; /* Цвет фона */
+    border: none; /* Убираем границу */
+    border-radius: 10px; /* Закругленные края */
+    color: white; /* Цвет текста */
+    padding: 10px 15px; /* Отступы */
+    font-size: 16px; /* Размер шрифта */
+    cursor: pointer; /* Указатель при наведении */
+    margin: 5px; /* Отступ между кнопками */
+    transition: background-color 0.3s; /* Плавный переход цвета */
+}
+
+.round-button:hover {
+    background-color: #80c2ff; /* Цвет при наведении */
+}
+
+.round-button.active {
+    background-color: #808dff; /* Цвет для активной кнопки */
+}
+
+footer {
+    display: flex; /* Используем flex для центрирования */
+    background-color: #131314; 
+    padding: 5px; /* Отступы по 5px */
+    border-radius: 10px; /* Закругленные края */
+    text-align: center; /* Центрируем текст */
+    margin-top: auto; /* Отступ сверху */
+    width: 90%; /* Занимает всю ширину */
+    position: relative; /* Позиционирование */
+    bottom: 10px; /* Внизу страницы */
+    align-items: center; /* Центрируем по Y */
+    align-self: center;
+    height: 50px;
+}
+
+.footer-links a {
+    margin: 0 5px; /* Отступы между ссылками */
+    text-decoration: none; /* Убираем подчеркивание */
+    color: #e7e7e7; /* Цвет текста */
 }

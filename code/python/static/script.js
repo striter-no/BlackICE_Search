@@ -2,12 +2,12 @@ document.getElementById('inputField').addEventListener('keypress', function(even
     if (event.key === 'Enter') {
         const inputValue = this.value;
 
-        // Собираем состояние чекбоксов
+        // Собираем состояние кнопок
         const searches = {
-            title: document.getElementById('titleCheckbox').checked,
-            domain: document.getElementById('domainCheckbox').checked,
-            content: document.getElementById('contentCheckbox').checked,
-            ip: document.getElementById('ipCheckbox').checked
+            title: document.getElementById('titleButton').classList.contains('active'),
+            domain: document.getElementById('domainButton').classList.contains('active'),
+            content: document.getElementById('contentButton').classList.contains('active'),
+            ip: document.getElementById('ipButton').classList.contains('active')
         };
 
         fetch('/submit', {
@@ -15,7 +15,7 @@ document.getElementById('inputField').addEventListener('keypress', function(even
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ input: inputValue, searches: searches }), // Передаем состояние чекбоксов
+            body: JSON.stringify({ input: inputValue, searches: searches }), // Передаем состояние кнопок
         })
         .then(response => response.json())
         .then(data => {
@@ -40,4 +40,8 @@ function displayResults(results) {
             resultsContainer.appendChild(item);
         });
     }
+}
+
+function toggleButton(button) {
+    button.classList.toggle('active'); // Переключаем класс active
 }
